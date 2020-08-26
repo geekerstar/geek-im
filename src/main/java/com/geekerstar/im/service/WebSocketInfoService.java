@@ -1,5 +1,6 @@
 package com.geekerstar.im.service;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.geekerstar.im.config.NettyConfig;
 import com.geekerstar.im.domain.entity.User;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,15 +28,16 @@ public class WebSocketInfoService {
     /**
      * 存储 Channel 与用户信息
      */
-    public static ConcurrentMap<Channel, User> webSocketInfoMap = new ConcurrentHashMap<>();
+    public static ConcurrentMap<Channel, User> webSocketInfoMap = Maps.newConcurrentMap();
     /**
      * 用户在线数量
      */
     private static final AtomicInteger USER_COUNT = new AtomicInteger(0);
 
     /**
-     * 新的客户端与服务端进行连接，先保存新的 channel，
-     * 当连接建立后，客户端会发送用户登录请求（LOGIN_CODE），这时再将用户信息保存进去
+     * 新的客户端与服务端进行连接，先保存新的 channel，当连接建立后，客户端会发送用户登录请求（LOGIN_CODE），这时再将用户信息保存进去
+     *
+     * @param channel
      */
     public void addChannel(Channel channel) {
         User user = new User();
@@ -47,6 +48,7 @@ public class WebSocketInfoService {
 
     /**
      * 有用户退出，需要删除该用户的信息，并移除该用户的 channel
+     * @param channel
      */
     public void deleteChannel(Channel channel) {
         String nick = webSocketInfoMap.get(channel).getNick();

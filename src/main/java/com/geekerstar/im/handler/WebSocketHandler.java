@@ -1,5 +1,6 @@
 package com.geekerstar.im.handler;
 
+import cn.hutool.core.util.IdUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,8 +21,8 @@ import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
-import java.util.UUID;
 
+import static cn.hutool.http.HttpStatus.HTTP_OK;
 import static com.geekerstar.im.constant.MessageCodeConstant.*;
 
 /**
@@ -145,6 +146,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
         String message = ((TextWebSocketFrame) frame).text();
         // {"code":1003,"nick":"geekerstar","id":"cc90a187-8384-41e0-ab3b-b6941ac80646","chatMessage":"hi"}
         JsonObject json = new JsonParser().parse(message).getAsJsonObject();
+        log.info("【收到信息:{}】", json);
         int code = json.get("code").getAsInt();
         String nick = json.get("nick").getAsString();
         String chatMessage;
@@ -160,8 +162,8 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
         switch (code) {
             //用户登录
             case CLIENT_LOGIN_CODE:
-                //生成 UUID 作为用户 id
-                String id = UUID.randomUUID().toString();
+                //生成用户 id
+                String id = IdUtil.getSnowflake(1, 1).nextIdStr();
                 if (!webSocketInfoService.addUser(ctx.channel(), nick, id)) {
                     return;
                 }
@@ -192,14 +194,10 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 tws = new TextWebSocketFrame(messageService.messageJsonStringFactory(SERVER_PRIVATE_CHAT_MESSAGE_CODE, chatMessage,
                         user, senderId));
                 webSocketInfoService.sendPrivateChatMessage(receiverId, tws);
-                /*
-                    如果当前信息是自己发给自己，那么信息只需要发给自己就好
-                    但是如果是发给他人，则信息既要发给对方，也要发给自己（两边都要显示）
-                 */
+                // 如果当前信息是自己发给自己，那么信息只需要发给自己就好。但是如果是发给他人，则信息既要发给对方，也要发给自己（两边都要显示）
                 if (!Objects.equals(receiverId, senderId)) {
                     //发给自己，发送人 id 为 receiverId
-                    tws = new TextWebSocketFrame(messageService.messageJsonStringFactory(SERVER_PRIVATE_CHAT_MESSAGE_CODE, chatMessage,
-                            user, receiverId));
+                    tws = new TextWebSocketFrame(messageService.messageJsonStringFactory(SERVER_PRIVATE_CHAT_MESSAGE_CODE, chatMessage, user, receiverId));
                     myChannel.writeAndFlush(tws);
                 }
                 break;
@@ -215,7 +213,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
      * 服务端向客户端响应消息
      */
     private void sendHttpResponse(ChannelHandlerContext ctx, DefaultFullHttpResponse response) {
-        if (response.status().code() != 200) {
+        if (response.status().code() != HTTP_OK) {
             //创建源缓冲区
             ByteBuf byteBuf = Unpooled.copiedBuffer(response.status().toString(), CharsetUtil.UTF_8);
             //将源缓冲区的数据传送到此缓冲区
@@ -225,12 +223,8 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
         }
         //写入请求，服务端向客户端发送数据
         ChannelFuture channelFuture = ctx.channel().writeAndFlush(response);
-        if (response.status().code() != 200) {
-            /*
-                如果请求失败，关闭 ChannelFuture
-
-                ChannelFutureListener.CLOSE 源码：future.channel().close();
-             */
+        if (response.status().code() != HTTP_OK) {
+            // 如果请求失败，关闭 ChannelFuture
             channelFuture.addListener(ChannelFutureListener.CLOSE);
         }
     }

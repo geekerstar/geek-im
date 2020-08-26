@@ -36,7 +36,7 @@ public class WebSocketMessage {
     private String message;
 
     /**
-     * 可以存放在线人数，在线用户列表，code等
+     * 存放在线人数，在线用户列表，code等
      */
     private Map<String, Object> body = Maps.newHashMap();
 
