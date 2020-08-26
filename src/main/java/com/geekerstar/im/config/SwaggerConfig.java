@@ -65,7 +65,7 @@ public class SwaggerConfig {
                 .description("基于Netty和Websocket实现的开放式即时通讯系统")
                 .version("1.0")
                 .termsOfServiceUrl("")
-                .contact(new Contact("成都汉图信息技术有限公司", "http://www.hantotem.com", ""))
+                .contact(new Contact("Geekerstar", "https://www.jikewenku.com", ""))
                 .license("")
                 .licenseUrl("")
                 .build();
