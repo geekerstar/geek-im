@@ -11,10 +11,14 @@ http://chat.geekerstar.com
 保持独立性的原则基础下，增加更多功能，如离线消息，表情图片发送，语音发送，加好友，加群等更多常用功能，并且让该系统可以无缝接入其他现有系统，无需做额外改造。
 
 ### 项目图片
-![Alt text](https://github.com/geekerstar/geek-im/blob/master/img/1.jpg)
-![Alt text](https://github.com/geekerstar/geek-im/blob/master/img/2.jpg)
-![Alt text](https://github.com/geekerstar/geek-im/blob/master/img/3.jpg)
-![Alt text](https://github.com/geekerstar/geek-im/blob/master/img/4.jpg)
-![Alt text](https://github.com/geekerstar/geek-im/blob/master/img/5.jpg)
+![1](https://github.com/geekerstar/geek-im/blob/master/img/1.jpg)
+
+![2](https://github.com/geekerstar/geek-im/blob/master/img/2.jpg)
+
+![3](https://github.com/geekerstar/geek-im/blob/master/img/3.jpg)
+
+![4](https://github.com/geekerstar/geek-im/blob/master/img/4.jpg)
+
+![5](https://github.com/geekerstar/geek-im/blob/master/img/5.jpg)
 
 
