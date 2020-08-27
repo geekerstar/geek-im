@@ -7,7 +7,7 @@ package com.geekerstar.im.constant;
  */
 public class WebSocketConstant {
 
-    public static final String WEB_SOCKET_URL = "ws://127.0.0.1:8090/websocket";
+    public static final String WEB_SOCKET_URL = "ws://39.107.25.229:8090/websocket";
 
     public static final int WEB_SOCKET_PORT = 8090;
 }
